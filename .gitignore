@@ -1,0 +1,67 @@
+# ── Secrets & credentials — NEVER commit ────────────────────────────────────
+# DB client config (holds AES-encrypted connection values)
+setting/database.xml
+**/setting/database.xml
+
+# Web-module DB config (plaintext DB host/user/password/db)
+conf.php
+**/conf/conf.php
+**/conf/conf.php.*
+
+# Database dumps (schema + data; may contain AES-encrypted credential columns)
+*.sql
+*.sql.gz
+*.sql.bz2
+*.dump
+
+# Any other credential/secret files
+*.pem
+*.key
+*.keystore
+.env
+**/.env
+
+# ── Binaries / large prebuilt artifacts (keep out of git) ───────────────────
+# Client dependency jars (large; ship separately or via a release)
+lib/*.jar
+**/lib/*.jar
+**/lib/**/*.jar
+
+# Assembled client jar
+khanza.jar
+**/khanza.jar
+
+# Downloaded installers / archives
+*.zip
+*.tar.gz
+*.tgz
+composer-setup.php
+
+# ── Webswing local state (regenerated at runtime) ───────────────────────────
+datastore/
+logs/
+tmp/
+*.pid
+webswing.out
+webswing.out.*
+.webswing-dropins.lock
+**/.webswing-dropins.lock
+apps/khanza.bak*
+
+# ── Build / vendor ──────────────────────────────────────────────────────────
+/vendor/
+node_modules/
+*.log
+
+# ── OS / editor cruft ───────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
+*~
+.*.swp
+.idea/
+.vscode/
+*.bak
+*.orig
