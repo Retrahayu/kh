@@ -131,8 +131,8 @@ Set these on the server after cloning. See `DEPLOYMENT.md` for the exact fields.
 
 ## License
 
-The SIMRS Khanza application is open-source software distributed under its own license
-(see the upstream project). This deployment package and its guides are provided as-is for
+The SIMRS Khanza application is open-source software distributed under its own AFPL license 
+(see Aladdin Free Public License ). This deployment package and its guides are provided as-is for
 operational use.
 
 ## Credits
