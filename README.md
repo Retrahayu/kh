@@ -62,9 +62,8 @@ Verified by `deploy/verify-khanza.sh`, which re-asserts every claim from live st
 ├── .gitignore                    # keeps secrets and large binaries out of git
 ├── webapps/                      # PHP web modules as deployed (sanitized conf.php)
 ├── epasien/                      # PHP e-medical-record module (sanitized conf.php)
-├── binaries/
-│   ├── README.md                 # what is excluded (127 MB jar, dumps) and why
-│   └── webapps/                  # released web-module tree (reference copy)
+├── binaries/README.md            # release inventory: what is excluded (jar, dumps, second
+│                                 # web-module copy) and how to re-fetch it
 └── deploy/
     ├── README.md                 # how to run everything below
     ├── lib/common.sh             # shared shell helpers
