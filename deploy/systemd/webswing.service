@@ -1,0 +1,31 @@
+[Unit]
+Description=Webswing 26.2 - SIMRS Khanza browser GUI (:8080/khanza)
+Documentation=file:/root/SIMRS-Khanza-Deployment-Guide.md
+After=network-online.target mariadb.service xvfb.service
+Wants=network-online.target
+Requires=xvfb.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/webswing/webswing-eval-26.2
+# Overridable without editing this unit (see deploy/conf/webswing.env.example)
+EnvironmentFile=-/etc/khanza/webswing.env
+Environment=HOME=/opt/webswing/webswing-eval-26.2
+Environment=JAVA_HOME=/usr/lib/jvm/bellsoft-java11-full.x86_64
+# JavaFX (lazily initialised by a lib/ dependency) needs a real X display:
+Environment=DISPLAY=:99
+# -h 127.0.0.1 once the httpd edge proxy is in front (see SECURITY.md #1);
+# -h 0.0.0.0 keeps direct browser access but exposes Webswing's hardcoded demo login.
+Environment=WEBSWING_BIND=0.0.0.0
+# Foreground equivalent of `webswing.sh run`, so systemd owns the cgroup and reaps the
+# per-session child JVMs. Do NOT also run `webswing.sh start`.
+ExecStart=/bin/bash -c 'exec "$JAVA_HOME/bin/java" -Xmx2g -jar $HOME/server/webswing-jetty-launcher.jar -serveradmin -aw $HOME/admin/webswing-admin-server.war -h "$WEBSWING_BIND" -j $HOME/jetty.properties -c $HOME/webswing.config -pfa $HOME/admin/webswing-admin.properties -adminctx /admin'
+Restart=on-failure
+RestartSec=5
+KillMode=control-group
+TimeoutStopSec=90
+
+[Install]
+WantedBy=multi-user.target

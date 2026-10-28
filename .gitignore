@@ -1,0 +1,53 @@
+# ── Secrets & credentials — NEVER commit ────────────────────────────────────
+setting/database.xml
+**/setting/database.xml
+conf.php                              # every web-module DB config
+**/conf/conf.php
+**/conf/conf.php.*
+database.ini                          # resumepasien (plaintext DB creds)
+webswing-admin.properties
+webswing.properties
+*.sql
+*.sql.gz
+*.sql.bz2
+*.dump
+*.pem
+*.key
+*.p12
+*.keystore
+.env
+**/.env
+khanza.env
+
+# ── Large prebuilt artifacts (ship separately, never in git) ────────────────
+lib/*.jar
+**/lib/*.jar
+**/lib/**/*.jar
+khanza.jar
+**/khanza.jar
+*.zip
+*.tar.gz
+*.tgz
+
+# ── Webswing / runtime state ────────────────────────────────────────────────
+datastore/
+logs/
+tmp/
+*.pid
+webswing.out*
+.webswing-dropins.lock
+**/.webswing-dropins.lock
+apps/khanza.bak*
+
+# ── Build / vendor / cruft ─────────────────────────────────────────────────
+/vendor/
+node_modules/
+*.log
+*~
+*.orig
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+__pycache__/
+*.pyc

@@ -1,0 +1,61 @@
+# Edge proxy for the Khanza GUI — the pattern that removes the Webswing
+# demo-security exposure (SECURITY.md finding #1). Not enabled by default.
+#
+# Why: Webswing's demo module hardcodes its users (admin/pwd, support/pwd, user/pwd) and
+# cannot be reconfigured. So authentication must happen at the edge, and Webswing must not be
+# reachable directly. Bind Webswing to loopback (unit: -h 127.0.0.1) and put this in front.
+#
+# Requires: dnf install -y mod_ssl; a real certificate (Let's Encrypt or an internal CA)
+#           a WebSocket-capable proxy -- mod_proxy_wstunnel ships with httpd.
+# Install to: /etc/httpd/conf.d/khanza-proxy.conf   then systemctl reload httpd
+
+LoadModule proxy_module        modules/mod_proxy.so
+LoadModule proxy_http_module   modules/mod_proxy_http.so
+LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so
+LoadModule headers_module      modules/mod_headers.so
+LoadModule auth_basic_module   modules/mod_auth_basic.so
+LoadModule ssl_module          modules/mod_ssl.so
+
+<VirtualHost *:443>
+    ServerName khanza.example.internal
+
+    SSLEngine on
+    SSLCertificateFile      /etc/pki/tls/certs/khanza.crt
+    SSLCertificateKeyFile   /etc/pki/tls/private/khanza.key
+    SSLProtocol             -all +TLSv1.2 +TLSv1.3
+
+    # 1. Network allowlist — the cheapest, most effective control.
+    <Location />
+        Require ip 10.11.27.0/24 203.0.113.0/24
+    </Location>
+
+    # 2. Second factor: HTTP Basic auth in front of Webswing's own login.
+    <Location /khanza>
+        AuthType Basic
+        AuthName "SIMRS Khanza"
+        AuthUserFile /etc/httpd/khanza.htpasswd
+        Require valid-user
+    </Location>
+
+    # 3. Never publish Webswing's admin console.
+    <Location /admin>
+        Require all denied
+    </Location>
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+    # App stream + WebSocket endpoints
+    ProxyPass        /khanza  http://127.0.0.1:8080/khanza
+    ProxyPassReverse /khanza  http://127.0.0.1:8080/khanza
+    ProxyPass        /khanza/async ws://127.0.0.1:8080/khanza/async
+    ProxyPassReverse /khanza/async ws://127.0.0.1:8080/khanza/async
+
+    RequestHeader set X-Forwarded-Proto "https"
+    Header always set Strict-Transport-Security "max-age=31536000"
+</VirtualHost>
+
+# Redirect plain HTTP to the TLS vhost (or drop :80 entirely).
+<VirtualHost *:80>
+    ServerName khanza.example.internal
+    Redirect permanent / https://khanza.example.internal/
+</VirtualHost>
