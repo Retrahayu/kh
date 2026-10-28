@@ -8,7 +8,7 @@
 #
 # Each step checks current state first and reports "already satisfied" instead of redoing work.
 set -uo pipefail
-HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"  # symlink-safe
 # shellcheck source=lib/common.sh
 . "$HERE/lib/common.sh"
 require_root

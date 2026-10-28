@@ -3,7 +3,7 @@
 #   ./backup-khanza.sh [--keep N] [--out DIR] [--no-db]
 # Restore: see the footer it prints (mysqldump gzip → mysql; tar → /).
 set -uo pipefail
-HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"  # symlink-safe
 # shellcheck source=lib/common.sh
 . "$HERE/lib/common.sh"
 require_root
